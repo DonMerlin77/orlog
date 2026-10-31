@@ -5,12 +5,15 @@ perspectives that argue, a synthesis, and the blind spots. It ran as a web app (
 rest of my projects reused.
 
 ## How it works
-1. **Loki** asks what you actually want before anything is decided (the goal behind the question).
-2. **The council** gives the question to voices with different cognitive styles (skeptic, builder, contrarian, ...).
-   A router picks which voices fire.
-3. **Cross-examination:** voices challenge the draft synthesis. A position that holds stays; one that changes is
-   recorded, along with whether it changed because of evidence or because of pressure.
-4. **The verdict** commits to an answer and keeps the reasons and the blind spots.
+1. **Loki** (in the web app) asks what you actually want before anything is decided: the goal behind the question.
+2. **Intake** translates the question as asked into the underlying question.
+3. **The wheel** scores all 19 cognitive-style voices (skeptic, builder, contrarian, ...) for relevance and picks the
+   top 9. They answer in parallel, optionally each on a different model family.
+4. **Synesthesia** reads every perspective and translates across domains; **the Socratic agent** names the one
+   foundational question the council failed to ask; opposing voice pairs are flagged as the tensions to resolve.
+5. **Synthesis**, then **a critic** looks for the single biggest flaw, and the synthesis is revised unless the critic
+   finds it strong. The verdict keeps the reasons and the blind spots.
+6. The run is scored against a written constitution and logged, so routing and training can learn from it.
 
 `orlog/core.py` ties the layers together: Brain (reasoning lenses), GoalLayer, RoundTable (the council), Hermes
 (research), Argus (code scanning), Sentinel, CrystalBall (forecasting), Router (logs decisions for training).
