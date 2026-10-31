@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title>Orlog — Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --fl1-a: rgba(255,110,0,0.85);  --fl1-b: rgba(255,40,0,0.55);
+      --fl2-a: rgba(255,185,0,0.90);  --fl2-b: rgba(255,100,0,0.75);
+      --fl3-a: rgba(255,235,70,0.95); --fl3-b: rgba(255,160,0,0.85);
+      --fc-a:  rgba(255,255,225,1);   --fc-b:  rgba(255,225,90,0.90);
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #d4d4d4;
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TORCH AMBIENT LIGHTS ── */
+    .torch-ambient {
+      position: fixed;
+      top: 0;
+      width: 580px;
+      height: 340px;
+      pointer-events: none;
+      z-index: 1;
+      border-radius: 50%;
+      animation: torch-flicker 3.5s ease-in-out infinite;
+    }
+    .torch-ambient-left {
+      left: calc(50% - 480px);
+      background: radial-gradient(ellipse at 65% 25%, rgba(255,185,60,0.13) 0%, rgba(255,150,30,0.07) 30%, rgba(200,120,20,0.03) 55%, transparent 72%);
+    }
+    .torch-ambient-right {
+      right: calc(50% - 480px);
+      background: radial-gradient(ellipse at 35% 25%, rgba(255,185,60,0.13) 0%, rgba(255,150,30,0.07) 30%, rgba(200,120,20,0.03) 55%, transparent 72%);
+      animation-delay: -1.7s;
+    }
+    @keyframes torch-flicker {
+      0%,100% { opacity: 1;    transform: scale(1); }
+      25%      { opacity: 0.88; transform: scale(0.97); }
+      50%      { opacity: 0.96; transform: scale(1.02); }
+      75%      { opacity: 0.82; transform: scale(0.98); }
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      padding: 28px 48px;
+      border-bottom: 1px solid #161616;
+      background: #0c0c0c;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    header::before {
+      content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 120px;
+      background: linear-gradient(to right, rgba(0,0,0,0.35) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    header::after {
+      content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 120px;
+      background: linear-gradient(to left, rgba(0,0,0,0.35) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .back-link {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 12px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.22);
+      z-index: 2;
+      transition: background 0.15s;
+    }
+    .back-link:hover { background: rgba(255,255,255,0.09); }
+
+    /* ── WORDMARK ── */
+    .wordmark {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .logo-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      flex-shrink: 0;
+      animation: helm-rock 3.8s ease-in-out infinite;
+    }
+    .logo-img {
+      width: 120px;
+      height: 120px;
+      display: block;
+      border-radius: 50%;
+    }
+    .rune-ring-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    .wordmark-text {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #8a7a68;
+    }
+
+    @keyframes helm-rock {
+      0%, 100% { transform: rotate(-1.8deg); }
+      50%       { transform: rotate(1.8deg); }
+    }
+
+    /* ── TORCH ── */
+    .torch {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .torch-glow {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,200,80,0.6) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .torch-cup {
+      width: 32px; height: 16px;
+      background: linear-gradient(135deg, #2a1200 0%, #4e2810 35%, #3c1e08 65%, #1a0a00 100%);
+      border-radius: 4px 4px 1px 1px;
+      box-shadow: 0 0 18px rgba(255,120,0,0.4), inset 0 3px 5px rgba(255,100,0,0.12), inset 0 -2px 4px rgba(0,0,0,0.65);
+      position: relative; z-index: 1;
+    }
+    .torch-wrap {
+      width: 20px; height: 11px;
+      background: repeating-linear-gradient(to bottom, #4e2e0c 0px,#4e2e0c 2px,#2c1606 2px,#2c1606 4px);
+      border-radius: 1px; box-shadow: 0 0 6px rgba(255,90,0,0.15); position: relative; z-index: 1;
+    }
+    .torch-shaft {
+      width: 9px; height: 80px;
+      background: linear-gradient(to right, #1c0e04 0%,#4a2810 18%,#7a4420 45%,#7a4420 55%,#4a2810 82%,#1c0e04 100%);
+      border-radius: 1px 1px 3px 3px; position: relative; z-index: 1;
+    }
+    .torch-shaft::after {
+      content: ''; position: absolute; left: -4px; top: 26px;
+      width: 17px; height: 5px;
+      background: linear-gradient(to bottom, #252525, #3d3d3d, #1a1a1a);
+      border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.7);
+    }
+    .torch-tip {
+      width: 7px; height: 10px;
+      background: linear-gradient(to bottom, #1e1008, #080402);
+      border-radius: 0 0 4px 4px; position: relative; z-index: 1;
+    }
+    .flame-wrap {
+      position: relative; z-index: 1;
+      width: 44px; height: 70px; margin-bottom: 1px;
+    }
+    .flame-l1, .flame-l2, .flame-l3, .flame-core {
+      position: absolute; bottom: 0;
+      border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+      transform-origin: 50% 100%;
+      animation: flame-flicker linear infinite;
+    }
+    .flame-l1 { width:38px;height:68px;left:3px;  background:radial-gradient(ellipse at 50% 85%,var(--fl1-a) 0%,var(--fl1-b) 55%,transparent 80%); filter:blur(5px);   animation-duration:2.3s; }
+    .flame-l2 { width:28px;height:56px;left:8px;  background:radial-gradient(ellipse at 50% 85%,var(--fl2-a) 0%,var(--fl2-b) 55%,transparent 80%); filter:blur(3px);   animation-duration:1.8s; animation-delay:-0.5s; }
+    .flame-l3 { width:18px;height:40px;left:13px; background:radial-gradient(ellipse at 50% 85%,var(--fl3-a) 0%,var(--fl3-b) 55%,transparent 80%); filter:blur(1.5px); animation-duration:1.4s; animation-delay:-0.2s; }
+    .flame-core { width:8px;height:22px;left:18px; background:radial-gradient(ellipse at 50% 75%,var(--fc-a) 0%,var(--fc-b) 60%,transparent 90%);  filter:blur(0.5px); animation-duration:1.0s; animation-delay:-0.1s; }
+    @keyframes flame-flicker {
+      0%   { transform: scaleX(1)    scaleY(1)    skewX(0deg);  }
+      12%  { transform: scaleX(0.92) scaleY(1.05) skewX(-5deg); }
+      28%  { transform: scaleX(1.05) scaleY(0.96) skewX(4deg);  }
+      45%  { transform: scaleX(0.96) scaleY(1.04) skewX(-3deg); }
+      63%  { transform: scaleX(1.04) scaleY(0.94) skewX(5deg);  }
+      80%  { transform: scaleX(0.93) scaleY(1.03) skewX(-4deg); }
+      100% { transform: scaleX(1)    scaleY(1)    skewX(0deg);  }
+    }
+    @media (max-width: 560px) { .torch { display: none; } }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+    }
+
+    .sign-in-wrap {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      opacity: 0;
+      animation: fade-up 0.6s ease forwards 0.2s;
+    }
+
+    .sign-in-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 20px;
+      letter-spacing: 0.15em;
+      color: #c4a882;
+      margin-bottom: 8px;
+    }
+
+    .sign-in-sub {
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+      line-height: 1.65;
+    }
+
+    .sign-in-hint {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: #444;
+      margin-bottom: 36px;
+    }
+
+    #clerk-sign-in { display: flex; justify-content: center; }
+
+    .loading-msg {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #555;
+      margin-top: 32px;
+    }
+
+    .disclaimer {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      color: #3a3a3a;
+      margin-top: 40px;
+      letter-spacing: 0.08em;
+    }
+
+    footer {
+      padding: 24px;
+      text-align: center;
+      border-top: 1px solid #141414;
+    }
+    footer span {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1e1e1e;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <script src="https://clerk.orlog.fyi/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" data-clerk-publishable-key="pk_live_YOUR_CLERK_PUBLISHABLE_KEY" type="text/javascript"></script>
+</head>
+<body>
+
+  <!-- Torch ambient wall lights -->
+  <div class="torch-ambient torch-ambient-left"></div>
+  <div class="torch-ambient torch-ambient-right"></div>
+
+  <header>
+    <!-- Left torch -->
+    <div class="torch torch-left" aria-hidden="true">
+      <div class="torch-glow"></div>
+      <div class="flame-wrap">
+        <div class="flame-l1"></div>
+        <div class="flame-l2"></div>
+        <div class="flame-l3"></div>
+        <div class="flame-core"></div>
+      </div>
+      <div class="torch-cup"></div>
+      <div class="torch-wrap"></div>
+      <div class="torch-shaft"></div>
+      <div class="torch-tip"></div>
+    </div>
+
+    <!-- Centered wordmark with logo -->
+    <a href="/" class="wordmark" style="text-decoration:none">
+      <div class="logo-wrap">
+        <img src="/orlog_logo.png" alt="Orlog" class="logo-img">
+        <svg class="rune-ring-svg" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <path id="rrc-si" d="M 22,160 A 138,138 0 0,1 298,160"/>
+          </defs>
+          <text font-size="9.5" letter-spacing="1" font-family="Georgia,serif"
+                fill="#c4a882" stroke="#0a0a0a" stroke-width="3" paint-order="stroke fill">
+            <textPath href="#rrc-si" startOffset="50%" text-anchor="middle">ᛊᛖᛗᚱᚨᛞ · ᚨᛚᛏᛖᚾᛒᚢᚱᚾ · ᚹᛖᛚᛚᛊᛈᚱᛁᚾᚷ ᛟᚠ ᛖᚾᛞᛚᛖᛊᛊ ᚲᚾᛟᚹᛁᚾᚷ</textPath>
+          </text>
+        </svg>
+      </div>
+      <span class="wordmark-text">Orlog</span>
+    </a>
+
+    <!-- Right torch -->
+    <div class="torch torch-right" aria-hidden="true">
+      <div class="torch-glow"></div>
+      <div class="flame-wrap">
+        <div class="flame-l1"></div>
+        <div class="flame-l2"></div>
+        <div class="flame-l3"></div>
+        <div class="flame-core"></div>
+      </div>
+      <div class="torch-cup"></div>
+      <div class="torch-wrap"></div>
+      <div class="torch-shaft"></div>
+      <div class="torch-tip"></div>
+    </div>
+
+    <a href="/" class="back-link">&larr; Back</a>
+  </header>
+
+  <main>
+    <div class="sign-in-wrap">
+      <h1 class="sign-in-title">Welcome back</h1>
+      <p class="sign-in-sub">Nine minds argue your decision. One honest verdict.</p>
+      <p class="sign-in-hint">Sign in to save your reasoning history and build your Wyrd pattern over time.</p>
+      <div id="clerk-sign-in"></div>
+      <p class="loading-msg" id="loading-msg">Loading&hellip;</p>
+      <p class="disclaimer">AI can make mistakes — double-check important decisions.</p>
+    </div>
+  </main>
+
+  <footer>
+    <span>&copy; 2026 Orlog</span>
+  </footer>
+
+  <script>
+    async function initSignIn() {
+      let tries = 0;
+      while (!window.Clerk && tries < 60) {
+        await new Promise(r => setTimeout(r, 100));
+        tries++;
+      }
+      if (!window.Clerk) {
+        document.getElementById('loading-msg').textContent = 'Sign-in unavailable. Return to app.';
+        return;
+      }
+      try {
+        await window.Clerk.load();
+        if (window.Clerk.user) { window.location.href = '/'; return; }
+        document.getElementById('loading-msg').style.display = 'none';
+        window.Clerk.mountSignIn(document.getElementById('clerk-sign-in'), {
+          afterSignInUrl: '/',
+          afterSignUpUrl: '/',
+          routing: 'hash',
+          appearance: {
+            variables: {
+              colorPrimary:        '#c4a882',
+              colorBackground:     '#111111',
+              colorText:           '#d4d4d4',
+              colorTextSecondary:  '#888888',
+              colorInputBackground:'#0e0e0e',
+              colorInputText:      '#d4d4d4',
+              borderRadius:        '3px',
+              fontFamily:          'Georgia, serif',
+            },
+            elements: {
+              card:               'background:#111111;border:1px solid #1f1f1f;box-shadow:none;',
+              formButtonPrimary:  'background:#c4a882;color:#0a0a0a;font-weight:700;letter-spacing:0.1em;',
+              formFieldInput:     'background:#0e0e0e;border-color:#222;color:#d4d4d4;',
+              socialButtonsBlockButton: 'background:#141414;border-color:#222;color:#d4d4d4;',
+              dividerLine:        'background:#1f1f1f;',
+              dividerText:        'color:#444;',
+              footerActionLink:   'color:#c4a882;',
+            },
+          },
+        });
+      } catch(e) {
+        document.getElementById('loading-msg').textContent = 'Unable to load sign-in. Try again.';
+      }
+    }
+    initSignIn();
+  </script>
+
+</body>
+</html>

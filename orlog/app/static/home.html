@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title>Orlog — A reasoning interface. Not an assistant.</title>
+  <meta name="description" content="Orlog maps your decision, names the real conflict, finds what's missing, and gives you a falsifiable verdict. Not a chatbot. A reasoning tool.">
+  <meta property="og:title" content="Orlog — A reasoning interface. Not an assistant.">
+  <meta property="og:description" content="Trained on real decisions. Shows its reasoning. Gives you a plan.">
+  <meta property="og:url" content="https://www.orlog.fyi">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --amber: #c4a882;
+      --bone:  #d4d4d4;
+      --dim:   #888;
+      --bg:    #0a0a0a;
+      --bg1:   #111111;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--bone);
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: relative;
+      padding: 24px 40px;
+      border-bottom: 1px solid #161616;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0c0c0c;
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-waitlist {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--amber);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 3px;
+      background: rgba(196,168,130,0.10);
+      border: 1px solid rgba(196,168,130,0.35);
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-waitlist:hover { background: rgba(196,168,130,0.20); color: #e8d0a8; }
+
+    .nav-terms {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.22);
+      transition: background 0.15s;
+    }
+    .nav-terms:hover { background: rgba(255,255,255,0.09); }
+
+    .nav-signin {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(196,168,130,0.5);
+      background: transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .nav-signin:hover { background: rgba(196,168,130,0.10); border-color: var(--amber); }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+      position: relative;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse at center top, rgba(196,168,130,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.1s;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--amber);
+      line-height: 1.1;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.25s;
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2.5vw, 20px);
+      color: #888;
+      line-height: 1.65;
+      max-width: 540px;
+      margin-bottom: 48px;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.4s;
+    }
+
+    .hero-sub em {
+      color: var(--bone);
+      font-style: normal;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.55s;
+    }
+
+    .cta-primary {
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #0a0a0a;
+      background: var(--amber);
+      padding: 14px 32px;
+      border-radius: 3px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .cta-primary:hover { background: #d4b890; transform: translateY(-1px); }
+
+    .cta-secondary {
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--amber);
+      padding: 14px 32px;
+      border-radius: 3px;
+      text-decoration: none;
+      border: 1px solid rgba(196,168,130,0.45);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .cta-secondary:hover { background: rgba(196,168,130,0.08); border-color: var(--amber); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      max-width: 660px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid #181818;
+      width: 100%;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 80px 24px;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.7s;
+    }
+
+    .how-label {
+      font-family: system-ui, sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #444;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 32px;
+    }
+
+    .how-step {
+      text-align: center;
+    }
+
+    .how-step-rune {
+      font-size: 28px;
+      color: var(--amber);
+      opacity: 0.7;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .how-step-name {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .how-step-desc {
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* ── PROOF STRIP ── */
+    .proof {
+      background: #0d0d0d;
+      border-top: 1px solid #161616;
+      border-bottom: 1px solid #161616;
+      padding: 56px 24px;
+      text-align: center;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.85s;
+    }
+
+    .proof-inner {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .proof-quote {
+      font-size: 18px;
+      color: var(--bone);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .proof-attr {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #444;
+    }
+
+    /* ── NOT THIS ── */
+    .not-this {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 80px 24px;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 1.0s;
+    }
+
+    .not-this-label {
+      font-family: system-ui, sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #444;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .not-this-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .not-this-cell {
+      padding: 24px;
+      background: #0e0e0e;
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .not-this-cell.bad {
+      color: #444;
+    }
+
+    .not-this-cell.good {
+      color: #888;
+    }
+
+    .not-this-cell.bad::before { content: "✕  "; color: #333; }
+    .not-this-cell.good::before { content: "→  "; color: var(--amber); }
+
+    /* ── FOOTER CTA ── */
+    .footer-cta {
+      text-align: center;
+      padding: 80px 24px;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 1.1s;
+    }
+
+    .footer-cta-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 24px;
+      letter-spacing: 0.1em;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+
+    .footer-cta-sub {
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      color: #444;
+      margin-bottom: 32px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 24px 40px;
+      border-top: 1px solid #141414;
+      text-align: center;
+    }
+
+    .footer-copy {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #2a2a2a;
+    }
+
+    /* ── ANIMATION ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-brand">ᛈ &nbsp;Orlog</a>
+    <div class="nav-links">
+      <a href="/waitlist.html" class="nav-waitlist">Waitlist</a>
+      <a href="/terms.html" class="nav-terms">Terms</a>
+      <a href="/signin" class="nav-signin">Sign in</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <img src="/orlog_logo.png" alt="Orlog" class="hero-logo">
+    <h1 class="hero-title">A reasoning interface.<br>Not an assistant.</h1>
+    <p class="hero-sub">
+      Most AI tools give you answers. Orlog gives you
+      <em>the decision</em> — mapped, named, and falsifiable.
+      It shows its work. It doesn't hedge.
+    </p>
+    <div class="hero-ctas">
+      <a href="/app" class="cta-primary">Enter Orlog &rarr;</a>
+      <a href="/waitlist.html" class="cta-secondary">Join the waitlist</a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <p class="how-label">How it works</p>
+    <div class="how-steps">
+      <div class="how-step">
+        <span class="how-step-rune">ᛚ</span>
+        <div class="how-step-name">Loki</div>
+        <p class="how-step-desc">Don't have a clear question? Loki surfaces your real goal through structured conversation before you submit anything.</p>
+      </div>
+      <div class="how-step">
+        <span class="how-step-rune">ᛈ</span>
+        <div class="how-step-name">Orlog</div>
+        <p class="how-step-desc">Maps the anchor assumption, names the real tension, finds the gap, names the risk, and gives a falsifiable verdict.</p>
+      </div>
+      <div class="how-step">
+        <span class="how-step-rune">ᚱ</span>
+        <div class="how-step-name">Execute</div>
+        <p class="how-step-desc">Every verdict comes with a concrete step-by-step plan. Not advice. An execution sequence you can start today.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- DEMO VERDICT -->
+  <section class="demo" style="max-width:660px;margin:0 auto;padding:80px 24px;opacity:0;animation:fade-up 0.8s ease forwards 0.85s">
+    <p style="font-family:system-ui,sans-serif;font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:#444;text-align:center;margin-bottom:40px">What the output looks like</p>
+
+    <div style="background:#0d0d0d;border:1px solid #181818;border-top:1px solid #222;padding:20px 24px;margin-bottom:2px">
+      <p style="font-family:system-ui,sans-serif;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:#444;margin-bottom:10px">Question submitted</p>
+      <p style="font-family:Georgia,serif;font-size:15px;color:#666;line-height:1.6;font-style:italic">"I've been offered a promotion at my current company, but I've been quietly building a side project for two years. Do I take the promotion or go all in?"</p>
+    </div>
+
+    <div class="demo-block" style="background:#0d0d0d;border:1px solid #181818;border-left:2px solid #2a2520;padding:20px 24px;margin-bottom:2px">
+      <div style="font-family:system-ui,sans-serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#c4a882;opacity:0.6;margin-bottom:8px">ᚨ &nbsp;Anchor</div>
+      <p style="font-family:Georgia,serif;font-size:14px;color:#888;line-height:1.7">The promotion feels safe — but the real risk is the two years already invested. Staying becomes the gamble, not leaving.</p>
+    </div>
+
+    <div class="demo-block" style="background:#0d0d0d;border:1px solid #181818;border-left:2px solid #2a2520;padding:20px 24px;margin-bottom:2px">
+      <div style="font-family:system-ui,sans-serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#c4a882;opacity:0.6;margin-bottom:8px">ᛏ &nbsp;Tension</div>
+      <p style="font-family:Georgia,serif;font-size:14px;color:#888;line-height:1.7">Financial security vs. ownership of outcome. The promotion buys comfort. The project buys a shot at something that's actually yours.</p>
+    </div>
+
+    <div class="demo-block" style="background:#0d0d0d;border:1px solid #181818;border-left:2px solid #2a2520;padding:20px 24px;margin-bottom:2px">
+      <div style="font-family:system-ui,sans-serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#c4a882;opacity:0.6;margin-bottom:8px">ᚷ &nbsp;Gap</div>
+      <p style="font-family:Georgia,serif;font-size:14px;color:#888;line-height:1.7">Whether the project has any real external validation. One paying customer changes the math entirely. Without it, this is a belief question, not a business one.</p>
+    </div>
+
+    <div class="demo-block" style="background:#0d0d0d;border:1px solid #181818;border-left:2px solid #2a2520;padding:20px 24px;margin-bottom:2px">
+      <div style="font-family:system-ui,sans-serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#c4a882;opacity:0.6;margin-bottom:8px">ᚱ &nbsp;Risk</div>
+      <p style="font-family:Georgia,serif;font-size:14px;color:#888;line-height:1.7">You take the promotion, coast on the salary, and the project dies quietly. In three years you're still here, wondering what would have happened.</p>
+    </div>
+
+    <div style="background:#0e0e0e;border:1px solid #1e1e1e;border-left:2px solid rgba(196,168,130,0.5);padding:24px;margin-bottom:16px">
+      <div style="font-family:system-ui,sans-serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#c4a882;margin-bottom:10px">ᛈ &nbsp;Verdict</div>
+      <p style="font-family:Georgia,serif;font-size:15px;color:#d4d4d4;line-height:1.75">If the project has zero external signal, take the promotion — then set a 90-day deadline to get one paying customer. If it already has signal, you already know the answer. You're just looking for permission to leave.</p>
+    </div>
+
+    <div style="text-align:center;margin-top:32px">
+      <a href="/app" class="cta-primary" style="font-family:system-ui,sans-serif;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#0a0a0a;background:#c4a882;padding:14px 32px;border-radius:3px;text-decoration:none">Try it on your decision &rarr;</a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PROOF -->
+  <section class="proof">
+    <div class="proof-inner">
+      <p class="proof-quote">"Some people know what they want already. Some don't. This was the first tool I've used that handles both."</p>
+      <p class="proof-attr">First external user · May 2026</p>
+    </div>
+  </section>
+
+  <!-- NOT THIS -->
+  <section class="not-this">
+    <p class="not-this-label">What Orlog is not</p>
+    <div class="not-this-grid">
+      <div class="not-this-cell bad">A chatbot that agrees with everything you say</div>
+      <div class="not-this-cell good">A reasoning engine that names what's actually at stake</div>
+      <div class="not-this-cell bad">Answers designed to make you feel good</div>
+      <div class="not-this-cell good">A falsifiable verdict you can test against reality</div>
+      <div class="not-this-cell bad">Generic productivity advice</div>
+      <div class="not-this-cell good">Analysis specific to your exact situation</div>
+      <div class="not-this-cell bad">Something that asks you to summarize your life</div>
+      <div class="not-this-cell good">One question. Full reasoning. Execution plan.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta">
+    <h2 class="footer-cta-title">Ready to reason?</h2>
+    <p class="footer-cta-sub">No account required to start.</p>
+    <a href="/app" class="cta-primary">Enter Orlog &rarr;</a>
+  </section>
+
+  <footer>
+    <p class="footer-copy">&copy; 2026 Orlog &nbsp;·&nbsp; AI can make mistakes — double-check important decisions.</p>
+  </footer>
+
+</body>
+</html>

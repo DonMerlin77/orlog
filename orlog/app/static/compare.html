@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title>Orlog — The Difference</title>
+  <meta name="description" content="The same question. Two minds. See what Mimir does that standard AI doesn't.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ================================================================
+       SECTION MAP (ctrl+f to jump):
+       § ROOT        — CSS variables + theme tokens
+       § BASE        — body, header, wordmark
+       § STORM       — waves, rain, helm-rock, clearing-light
+       § TORCH       — header torch flames
+       § THEME       — era toggle button
+       § LAYOUT      — main, hero, input area, columns
+       § COMPARE     — col-baseline, col-mimir, rune blocks
+       § CTA         — call-to-action bar
+       ================================================================ */
+
+    /* § ROOT */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --surface-0: #0a0a0a;
+      --surface-1: #111111;
+      --surface-2: #1a1a1a;
+      --color-amber: #c4a882;
+      --color-bone: #d4d4d4;
+
+      --theme-body:  #0a0a0a;
+      --theme-glow:  rgba(255,140,40,0.18);
+      --theme-clear: rgba(196,168,130,0.13);
+      --fl1-a: rgba(255,110,0,0.85);    --fl1-b: rgba(255,40,0,0.55);
+      --fl2-a: rgba(255,185,0,0.90);    --fl2-b: rgba(255,100,0,0.75);
+      --fl3-a: rgba(255,235,70,0.95);   --fl3-b: rgba(255,160,0,0.85);
+      --fc-a:  rgba(255,255,225,1);     --fc-b:  rgba(255,225,90,0.90);
+    }
+
+    body.theme-forge {
+      --theme-body:  #0a0706;
+      --theme-glow:  rgba(255,55,10,0.25);
+      --theme-clear: rgba(200,70,30,0.13);
+      --fl1-a: rgba(255,30,0,0.85);     --fl1-b: rgba(170,5,0,0.55);
+      --fl2-a: rgba(255,90,0,0.90);     --fl2-b: rgba(210,30,0,0.75);
+      --fl3-a: rgba(255,150,10,0.95);   --fl3-b: rgba(255,70,0,0.85);
+      --fc-a:  rgba(255,220,180,1);     --fc-b:  rgba(255,150,50,0.90);
+    }
+
+    body.theme-egypt {
+      --theme-body:  #0a0908;
+      --theme-glow:  rgba(215,175,55,0.22);
+      --theme-clear: rgba(210,165,60,0.12);
+      --fl1-a: rgba(255,160,0,0.85);    --fl1-b: rgba(190,95,0,0.55);
+      --fl2-a: rgba(255,210,0,0.90);    --fl2-b: rgba(255,160,0,0.75);
+      --fl3-a: rgba(255,245,100,0.95);  --fl3-b: rgba(255,200,40,0.85);
+      --fc-a:  rgba(255,255,235,1);     --fc-b:  rgba(255,235,110,0.90);
+    }
+
+    /* § BASE */
+    body {
+      background: var(--theme-body);
+      color: var(--color-bone);
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 2s ease;
+    }
+
+    header {
+      position: relative;
+      padding: 36px 48px;
+      border-bottom: 1px solid #161616;
+      background: #0c0c0c;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header::before, header::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    header::before {
+      left: -40px;
+      background: radial-gradient(ellipse, var(--theme-glow) 0%, transparent 70%);
+      transition: background 2s ease;
+    }
+
+    header::after {
+      right: -40px;
+      background: radial-gradient(ellipse, var(--theme-glow) 0%, transparent 70%);
+      transition: background 2s ease;
+    }
+
+    .wordmark {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      text-decoration: none;
+    }
+
+    .logo-wrap {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      flex-shrink: 0;
+      animation: helm-rock 3.8s ease-in-out infinite;
+    }
+
+    .logo-img {
+      width: 96px;
+      height: 96px;
+      display: block;
+      border-radius: 50%;
+    }
+
+    .rune-ring-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    .wordmark-text {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #8a7a68;
+    }
+
+    .back-link {
+      position: absolute;
+      right: 24px;
+      bottom: 14px;
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #c4a882;
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+      z-index: 2;
+    }
+    .back-link:hover { opacity: 1; }
+
+    /* § STORM */
+    .wave-container {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 90px;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+      transform-origin: bottom center;
+      transition: transform 5s ease, opacity 5s ease;
+    }
+
+    .wave-back {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 90px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 90'%3E%3Cpath d='M0,45 C150,18 350,72 600,45 C850,18 1050,72 1200,45 L1200,90 L0,90 Z' fill='rgba(12,30,68,0.35)'/%3E%3C/svg%3E");
+      background-repeat: repeat-x;
+      background-size: 1200px 90px;
+      animation: wave-back 14s linear infinite;
+    }
+
+    .wave-front {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 90px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 90'%3E%3Cpath d='M0,55 C110,22 290,80 450,55 C610,30 790,82 900,55 L900,90 L0,90 Z' fill='rgba(8,20,50,0.55)'/%3E%3C/svg%3E");
+      background-repeat: repeat-x;
+      background-size: 900px 90px;
+      animation: wave-front 9s linear infinite;
+    }
+
+    @keyframes wave-back  { from { background-position: 0 0; } to { background-position: -1200px 0; } }
+    @keyframes wave-front { from { background-position: 0 0; } to { background-position: -900px 0; } }
+
+    body.calm .wave-container { transform: scaleY(0.28); opacity: 0.45; }
+
+    @keyframes rain-fall {
+      0%   { transform: rotate(12deg) translateY(-80px); opacity: 0; }
+      8%   { opacity: 0.8; }
+      92%  { opacity: 0.5; }
+      100% { transform: rotate(12deg) translateY(110vh); opacity: 0; }
+    }
+
+    .rain-drop {
+      position: fixed;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(140,175,220,0.22));
+      pointer-events: none;
+      z-index: 0;
+      animation: rain-fall linear infinite;
+      transition: opacity 4s ease;
+    }
+
+    body.calm .rain-drop { opacity: 0 !important; }
+    body.theme-forge .rain-drop { background: linear-gradient(to bottom, transparent, rgba(255,80,20,0.14)); }
+    body.theme-egypt .rain-drop { background: linear-gradient(to bottom, transparent, rgba(200,165,60,0.13)); }
+
+    body.theme-forge .wave-container { filter: sepia(1) saturate(2); }
+    body.theme-egypt .wave-container { filter: sepia(1) hue-rotate(10deg); }
+
+    .clearing-light {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: radial-gradient(ellipse at 50% -30%, var(--theme-clear) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 5s ease, background 2s ease;
+    }
+
+    body.calm .clearing-light { opacity: 1; }
+
+    @keyframes helm-rock {
+      0%, 100% { transform: rotate(-1.8deg); }
+      50%       { transform: rotate(1.8deg); }
+    }
+
+    body.calm .logo-wrap { animation: none; transform: rotate(0deg); transition: transform 2s ease; }
+
+    /* § TORCH */
+    .torch {
+      position: absolute;
+      top: 72%;
+      transform: translateY(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .torch-left  { left: 52px; }
+    .torch-right { right: 52px; }
+
+    .torch-stick {
+      width: 6px; height: 44px;
+      background: linear-gradient(to bottom, #3a2a18, #1a1208);
+      border-radius: 1px;
+    }
+
+    .torch-head {
+      width: 14px; height: 10px;
+      background: #2a1e10;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .flame-wrap {
+      position: relative;
+      width: 44px; height: 72px;
+      margin-bottom: 2px;
+    }
+
+    .flame-l1, .flame-l2, .flame-l3, .flame-core {
+      position: absolute;
+      bottom: 0;
+      border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+      transform-origin: 50% 100%;
+      animation: flame-flicker linear infinite;
+    }
+
+    .flame-l1 {
+      width: 38px; height: 68px; left: 3px;
+      background: radial-gradient(ellipse at 50% 85%, var(--fl1-a) 0%, var(--fl1-b) 55%, transparent 80%);
+      filter: blur(5px);
+      animation-duration: 2.3s;
+    }
+
+    .flame-l2 {
+      width: 28px; height: 56px; left: 8px;
+      background: radial-gradient(ellipse at 50% 85%, var(--fl2-a) 0%, var(--fl2-b) 55%, transparent 80%);
+      filter: blur(3px);
+      animation-duration: 1.8s;
+      animation-delay: -0.5s;
+    }
+
+    .flame-l3 {
+      width: 18px; height: 40px; left: 13px;
+      background: radial-gradient(ellipse at 50% 85%, var(--fl3-a) 0%, var(--fl3-b) 55%, transparent 80%);
+      filter: blur(1.5px);
+      animation-duration: 1.4s;
+      animation-delay: -0.2s;
+    }
+
+    .flame-core {
+      width: 8px; height: 22px; left: 18px;
+      background: radial-gradient(ellipse at 50% 75%, var(--fc-a) 0%, var(--fc-b) 60%, transparent 90%);
+      filter: blur(0.5px);
+      animation-duration: 1.0s;
+      animation-delay: -0.1s;
+    }
+
+    @keyframes flame-flicker {
+      0%   { transform: scaleX(1)    scaleY(1)    skewX(0deg);  }
+      12%  { transform: scaleX(0.92) scaleY(1.05) skewX(-5deg); }
+      28%  { transform: scaleX(1.05) scaleY(0.96) skewX(4deg);  }
+      45%  { transform: scaleX(0.96) scaleY(1.04) skewX(-3deg); }
+      63%  { transform: scaleX(1.04) scaleY(0.94) skewX(5deg);  }
+      80%  { transform: scaleX(0.93) scaleY(1.03) skewX(-4deg); }
+      100% { transform: scaleX(1)    scaleY(1)    skewX(0deg);  }
+    }
+
+    @media (max-width: 560px) { .torch { display: none; } }
+
+    /* § THEME */
+    .theme-toggle {
+      position: absolute;
+      left: 24px;
+      bottom: 14px;
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #2e2e2e;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 2;
+      transition: color 0.2s;
+      padding: 0;
+    }
+    .theme-toggle:hover { color: #555; }
+
+    /* § LAYOUT */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 56px 24px 120px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .hero-label {
+      font-family: system-ui, sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 18px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--color-amber);
+      margin-bottom: 16px;
+    }
+
+    .hero-sub {
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      color: #444;
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+    }
+
+    .input-area {
+      max-width: 660px;
+      margin: 0 auto 48px;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--surface-1);
+      border: 1px solid #222;
+      border-left: 2px solid #3a3020;
+      border-radius: 3px;
+      color: #d8d8d8;
+      font-family: Georgia, serif;
+      font-size: 16px;
+      line-height: 1.65;
+      padding: 16px;
+      resize: vertical;
+      min-height: 110px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s, border-left-color 0.2s;
+    }
+
+    textarea:focus {
+      border-color: #2e2e2e;
+      border-left-color: var(--color-amber);
+      background: var(--surface-2);
+    }
+    textarea::placeholder { color: #3a3a3a; }
+
+    .input-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
+    .example-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .chip {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      color: #3a3a3a;
+      border: 1px solid #1a1a1a;
+      border-radius: 2px;
+      padding: 7px 14px;
+      cursor: pointer;
+      background: transparent;
+      letter-spacing: 0.02em;
+      transition: color 0.15s, border-color 0.15s;
+      text-align: left;
+    }
+    .chip:hover { color: #c4a882; border-color: #3a3020; }
+
+    .compare-btn {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      background: #c4a882;
+      color: #0a0a0a;
+      border: none;
+      padding: 11px 26px;
+      transition: background 0.15s;
+    }
+    .compare-btn:hover { background: #d4b892; }
+    .compare-btn:disabled { background: #1a1a1a; color: #333; cursor: not-allowed; }
+
+    .status {
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      color: #3a3a3a;
+      text-align: center;
+      margin-bottom: 32px;
+      display: none;
+      letter-spacing: 0.04em;
+    }
+    .status.on { display: block; }
+
+    @keyframes rune-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* § COMPARE */
+    .columns {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .columns.on { display: grid; animation: rune-in 0.5s ease forwards; }
+
+    @media (max-width: 700px) {
+      .columns.on { grid-template-columns: 1fr; }
+    }
+
+    .col-header {
+      font-family: system-ui, sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .col-baseline .col-header { color: #444; }
+    .col-mimir   .col-header { color: #5a8a5a; }
+
+    .col-body {
+      padding: 20px;
+      background: var(--surface-1);
+      border-radius: 2px;
+      min-height: 200px;
+    }
+
+    .col-baseline .col-body { border-left: 2px solid #1e1e1e; }
+    .col-mimir   .col-body { border-left: 2px solid #2e4a2e; }
+
+    .baseline-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #666;
+    }
+
+    .rune-block { margin-bottom: 20px; }
+
+    .rune-label {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #c4a882;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rune-char { font-family: Georgia, serif; font-size: 18px; line-height: 1; }
+
+    .rune-content {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #c8c8c8;
+    }
+
+    .verdict-block {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #1e1e1e;
+    }
+
+    .verdict-block .rune-label { color: #e0e0e0; }
+    .verdict-block .rune-content { font-size: 16px; color: #f0f0f0; }
+
+    .free-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #c8c8c8;
+    }
+
+    /* § CTA */
+    .cta-bar {
+      text-align: center;
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid #141414;
+      display: none;
+    }
+
+    .cta-bar.on { display: block; animation: rune-in 0.4s ease forwards; }
+
+    .cta-label {
+      font-family: system-ui, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .cta-link {
+      display: inline-block;
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: #c4a882;
+      color: #0a0a0a;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 2px;
+      transition: background 0.15s;
+    }
+    .cta-link:hover { background: #d4b892; }
+  </style>
+</head>
+<body>
+  <!-- Storm layers -->
+  <div class="wave-container">
+    <div class="wave-back"></div>
+    <div class="wave-front"></div>
+  </div>
+  <div class="clearing-light" id="clearing-light"></div>
+
+  <header>
+    <div class="torch torch-left" aria-hidden="true">
+      <div class="flame-wrap">
+        <div class="flame-l1"></div>
+        <div class="flame-l2"></div>
+        <div class="flame-l3"></div>
+        <div class="flame-core"></div>
+      </div>
+      <div class="torch-head"></div>
+      <div class="torch-stick"></div>
+    </div>
+
+    <a class="wordmark" href="/">
+      <div class="logo-wrap">
+        <img src="/orlog_logo.png" alt="Orlog" class="logo-img">
+        <svg class="rune-ring-svg" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <path id="rrc2" d="M 22,140 A 118,118 0 0,1 258,140"/>
+          </defs>
+          <text font-size="9.5" letter-spacing="1" font-family="Georgia,serif"
+                fill="#c4a882" stroke="#0a0a0a" stroke-width="3" paint-order="stroke fill">
+            <textPath href="#rrc2" startOffset="50%" text-anchor="middle">ᛊᛖᛗᚱᚨᛞ · ᚨᛚᛏᛖᚾᛒᚢᚱᚾ · ᚹᛖᛚᛚᛊᛈᚱᛁᚾᚷ ᛟᚠ ᛖᚾᛞᛚᛖᛊᛊ ᚲᚾᛟᚹᛁᚾᚷ</textPath>
+          </text>
+        </svg>
+      </div>
+      <span class="wordmark-text">Orlog</span>
+    </a>
+
+    <div class="torch torch-right" aria-hidden="true">
+      <div class="flame-wrap">
+        <div class="flame-l1"></div>
+        <div class="flame-l2"></div>
+        <div class="flame-l3"></div>
+        <div class="flame-core"></div>
+      </div>
+      <div class="torch-head"></div>
+      <div class="torch-stick"></div>
+    </div>
+
+    <button class="theme-toggle" id="theme-toggle" onclick="cycleTheme()" title="Change era"></button>
+    <a class="back-link" href="/">&larr; Orlog</a>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-label">The Difference</div>
+      <div class="hero-title">The Same Question. Two Minds.</div>
+      <p class="hero-sub">
+        Standard AI answers the question you asked.<br>
+        Mimir maps the decision underneath it.
+      </p>
+    </div>
+
+    <div class="input-area">
+      <textarea id="q" placeholder="What decision are you facing?" rows="4"></textarea>
+      <div class="input-row">
+        <button class="compare-btn" id="compare-btn" onclick="runCompare()">Compare &rarr;</button>
+      </div>
+      <div class="example-chips">
+        <button class="chip" onclick="useChip(this)">Should I quit my job?</button>
+        <button class="chip" onclick="useChip(this)">Should I move for this opportunity?</button>
+        <button class="chip" onclick="useChip(this)">Is this business idea worth pursuing?</button>
+        <button class="chip" onclick="useChip(this)">Should I say what I actually think?</button>
+      </div>
+    </div>
+
+    <div class="status" id="status">Mapping your decision&hellip; Mimir is warming up, this takes 30&ndash;60 seconds.</div>
+
+    <div class="columns" id="columns">
+      <div class="col-baseline">
+        <div class="col-header">Standard AI</div>
+        <div class="col-body">
+          <div class="baseline-text" id="baseline-out"></div>
+        </div>
+      </div>
+      <div class="col-mimir">
+        <div class="col-header">Orlog &middot; Full Reasoning</div>
+        <div class="col-body" id="mimir-out"></div>
+      </div>
+    </div>
+
+    <div class="cta-bar" id="cta-bar">
+      <div class="cta-label">Use Mimir for your real decisions</div>
+      <a class="cta-link" href="/">Open Orlog &rarr;</a>
+    </div>
+  </main>
+
+  <script>
+    /* § STORM */
+    function initRain() {
+      const container = document.createElement('div');
+      container.id = 'rain-container';
+      container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;';
+      for (let i = 0; i < 26; i++) {
+        const drop = document.createElement('div');
+        drop.className = 'rain-drop';
+        const left = -10 + Math.random() * 115;
+        const dur  = 0.75 + Math.random() * 0.9;
+        const delay = -(Math.random() * 4);
+        const height = 38 + Math.random() * 48;
+        drop.style.cssText = `left:${left}%;top:-100px;height:${height}px;animation-duration:${dur}s;animation-delay:${delay}s;`;
+        container.appendChild(drop);
+      }
+      document.body.insertBefore(container, document.body.firstChild);
+    }
+
+    function triggerCalm() { document.body.classList.add('calm'); }
+    function resetWeather() { document.body.classList.remove('calm'); }
+
+    initRain();
+
+    /* § THEME */
+    const THEMES = [
+      { id: 'viking', label: 'The Helm'           },
+      { id: 'forge',  label: 'The Forge'           },
+      { id: 'egypt',  label: 'Egyptian Workshop'   },
+    ];
+    let _themeIdx = parseInt(localStorage.getItem('orlog_theme') || '0') % THEMES.length;
+
+    function applyTheme(idx) {
+      document.body.classList.remove('theme-forge', 'theme-egypt');
+      const t = THEMES[idx];
+      if (t.id === 'forge') document.body.classList.add('theme-forge');
+      if (t.id === 'egypt') document.body.classList.add('theme-egypt');
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = t.label;
+    }
+
+    function cycleTheme() {
+      _themeIdx = (_themeIdx + 1) % THEMES.length;
+      localStorage.setItem('orlog_theme', _themeIdx);
+      applyTheme(_themeIdx);
+    }
+
+    applyTheme(_themeIdx);
+
+    /* § COMPARE */
+    function useChip(btn) {
+      document.getElementById('q').value = btn.textContent;
+      document.getElementById('q').focus();
+    }
+
+    async function runCompare() {
+      const q = document.getElementById('q').value.trim();
+      if (!q) return;
+
+      resetWeather();
+
+      const btn = document.getElementById('compare-btn');
+      btn.disabled = true;
+      btn.textContent = 'Comparing…';
+
+      document.getElementById('status').classList.add('on');
+      document.getElementById('columns').classList.remove('on');
+      document.getElementById('cta-bar').classList.remove('on');
+      document.getElementById('baseline-out').textContent = '';
+      document.getElementById('mimir-out').innerHTML = '';
+
+      try {
+        const res  = await fetch('/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q }),
+        });
+        const data = await res.json();
+
+        document.getElementById('baseline-out').textContent = data.baseline || 'No response.';
+        document.getElementById('mimir-out').innerHTML = parseMimir(data.mimir || '');
+
+        document.getElementById('status').classList.remove('on');
+        document.getElementById('columns').classList.add('on');
+        document.getElementById('cta-bar').classList.add('on');
+
+        setTimeout(triggerCalm, 600);
+      } catch {
+        document.getElementById('status').textContent = 'Something went wrong. Try again.';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Compare →';
+    }
+
+    function parseMimir(text) {
+      const RUNES = {
+        anchor:  { char: 'ᚠ', label: 'Anchor'  },
+        tension: { char: 'ᚢ', label: 'Tension' },
+        gap:     { char: 'ᚷ', label: 'Gap'     },
+        risk:    { char: 'ᛉ', label: 'Risk'    },
+      };
+
+      const patterns = [
+        { key: 'anchor',  re: /(?:anchor|ᚠ_anchor)\s*[:\-–]\s*/i },
+        { key: 'tension', re: /(?:tension|ᚢ_tension)\s*[:\-–]\s*/i },
+        { key: 'gap',     re: /(?:gap|ᚷ_gap)\s*[:\-–]\s*/i },
+        { key: 'risk',    re: /(?:risk|ᛉ_risk)\s*[:\-–]\s*/i },
+      ];
+      const verdictRe = /verdict\s*[:\-–]\s*/i;
+
+      let remainder = text;
+      let sections = {};
+
+      for (let i = 0; i < patterns.length; i++) {
+        const { key, re } = patterns[i];
+        const nextRe = i + 1 < patterns.length ? patterns[i + 1].re : verdictRe;
+        const m = re.exec(remainder);
+        if (!m) continue;
+        const start = m.index + m[0].length;
+        const nextM = nextRe.exec(remainder.slice(start));
+        const end = nextM ? start + nextM.index : remainder.length;
+        sections[key] = remainder.slice(start, end).trim();
+        remainder = remainder.slice(0, m.index) + remainder.slice(end);
+      }
+
+      const vm = verdictRe.exec(remainder);
+      const verdict = vm ? remainder.slice(vm.index + vm[0].length).trim() : null;
+      const hasStructure = Object.keys(sections).length >= 2 || verdict;
+
+      if (!hasStructure) return `<div class="free-text">${esc(text)}</div>`;
+
+      let html = '';
+      for (const { key } of patterns) {
+        if (!sections[key]) continue;
+        const r = RUNES[key];
+        html += `<div class="rune-block">
+          <div class="rune-label"><span class="rune-char">${r.char}</span>${r.label}</div>
+          <div class="rune-content">${esc(sections[key])}</div>
+        </div>`;
+      }
+      if (verdict) {
+        html += `<div class="verdict-block">
+          <div class="rune-label">Verdict</div>
+          <div class="rune-content">${esc(verdict)}</div>
+        </div>`;
+      }
+      return html || `<div class="free-text">${esc(text)}</div>`;
+    }
+
+    function esc(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    }
+  </script>
+</body>
+</html>

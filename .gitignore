@@ -1,0 +1,5 @@
+.env
+__pycache__/
+*.jsonl
+logs/
+orlog/app/user_data/

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orlog — Join the Waitlist</title>
+  <meta name="description" content="A reasoning engine trained on real decisions. Not a chatbot. Not a wrapper. Something new.">
+  <meta property="og:title" content="Orlog — A reasoning engine trained on real decisions">
+  <meta property="og:description" content="Shows its thinking. Translates it. Then builds you a plan. Join the waitlist.">
+  <meta property="og:type" content="website">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: #d4d4d4;
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 28px 40px;
+      border-bottom: 1px solid #141414;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wordmark {
+      font-family: system-ui, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .wordmark em { color: #c4a882; font-style: normal; }
+
+    .nav-link {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .nav-link:hover { color: #555; }
+    .nav-try {
+      color: #fff !important;
+      padding: 5px 12px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.25);
+      transition: background 0.15s;
+    }
+    .nav-try:hover { background: rgba(255,255,255,0.09) !important; color: #fff !important; }
+
+    main {
+      flex: 1;
+      max-width: 580px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 80px 24px 100px;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .eyebrow {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #c4a882;
+      margin-bottom: 24px;
+      animation: fade-up 0.6s ease forwards;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.2;
+      color: #f0f0f0;
+      font-weight: normal;
+      margin-bottom: 24px;
+      animation: fade-up 0.6s 0.1s ease both;
+    }
+
+    h1 em {
+      color: #c4a882;
+      font-style: normal;
+    }
+
+    .sub {
+      font-family: system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #666;
+      margin-bottom: 52px;
+      animation: fade-up 0.6s 0.2s ease both;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      animation: fade-up 0.6s 0.3s ease both;
+    }
+
+    input[type="email"] {
+      flex: 1;
+      background: #0f0f0f;
+      border: 1px solid #1e1e1e;
+      border-radius: 2px;
+      color: #d8d8d8;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="email"]:focus { border-color: #2e2e2e; }
+    input[type="email"]::placeholder { color: #363636; }
+
+    button[type="submit"] {
+      background: #c4a882;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 2px;
+      padding: 13px 24px;
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    button[type="submit"]:hover { background: #d4b892; }
+    button[type="submit"]:disabled { background: #1e1e1e; color: #444; cursor: not-allowed; }
+
+    .fine-print {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      color: #2e2e2e;
+      animation: fade-up 0.6s 0.4s ease both;
+    }
+
+    .success {
+      display: none;
+      background: #0f1a0f;
+      border: 1px solid #1a2e1a;
+      border-radius: 2px;
+      padding: 16px 20px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      color: #5a8a5a;
+      margin-bottom: 16px;
+    }
+
+    .success.on { display: block; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #141414;
+      margin: 64px 0;
+    }
+
+    .proof-label {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #333;
+      margin-bottom: 32px;
+    }
+
+    .proof-items {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .proof-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .proof-rune {
+      font-family: Georgia, serif;
+      font-size: 22px;
+      color: #c4a882;
+      line-height: 1;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .proof-text {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #888;
+    }
+
+    .proof-text strong {
+      color: #bbb;
+      font-weight: normal;
+    }
+
+    footer {
+      padding: 32px 40px;
+      border-top: 1px solid #0f0f0f;
+    }
+
+    .footer-inner {
+      max-width: 580px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-word {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #222;
+    }
+
+    .footer-link {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      color: #2a2a2a;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-link:hover { color: #444; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="wordmark" style="text-decoration:none"><em>ᛈ</em> &nbsp;Orlog</a>
+    <a href="/" class="nav-link nav-try">Try it &rarr;</a>
+  </header>
+
+  <main>
+    <div class="eyebrow">Early access</div>
+
+    <h1>The reasoning engine that shows you <em>why</em>, not just what.</h1>
+
+    <p class="sub">
+      Orlog is trained on real decisions — not scraped text. It maps your situation, names the real conflict, finds the gap you're missing, and hands you a plan. Built for people with hard problems, not easy questions.
+    </p>
+
+    <div class="success" id="success">
+      You're on the list. We'll reach out when access opens.
+    </div>
+
+    <form class="form-row" id="waitlist-form" onsubmit="submit(event)">
+      <input type="email" id="email" placeholder="your@email.com" required autocomplete="email">
+      <button type="submit" id="submit-btn">Join waitlist</button>
+    </form>
+
+    <p class="fine-print">No spam. One email when access opens. That's it.</p>
+
+    <hr class="divider">
+
+    <div class="proof-label">What Orlog does</div>
+
+    <div class="proof-items">
+      <div class="proof-item">
+        <span class="proof-rune">ᚠ</span>
+        <p class="proof-text"><strong>Finds the load-bearing assumption.</strong> The one belief your entire situation rests on — named, in one sentence, falsifiable.</p>
+      </div>
+      <div class="proof-item">
+        <span class="proof-rune">ᚢ</span>
+        <p class="proof-text"><strong>Names the real conflict.</strong> Not the surface tension — the two forces actually pulling against each other.</p>
+      </div>
+      <div class="proof-item">
+        <span class="proof-rune">ᚷ</span>
+        <p class="proof-text"><strong>Surfaces what's missing.</strong> The information you don't have but need before you decide anything.</p>
+      </div>
+      <div class="proof-item">
+        <span class="proof-rune">ᛉ</span>
+        <p class="proof-text"><strong>Names the failure condition.</strong> What breaks first if the core assumption is wrong.</p>
+      </div>
+      <div class="proof-item">
+        <span class="proof-rune">◈</span>
+        <p class="proof-text"><strong>Then gives you a plan.</strong> Not advice. A sequenced set of actions anchored to the reasoning — so you know exactly what to do and why.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-word">Orlog · Early 2026</span>
+      <a href="/" class="footer-link">Try the interface &rarr;</a>
+    </div>
+  </footer>
+
+  <script>
+    async function submit(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const btn   = document.getElementById('submit-btn');
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Joining…';
+
+      try {
+        const res = await fetch('/join-waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          document.getElementById('waitlist-form').style.display = 'none';
+          document.getElementById('success').classList.add('on');
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Join waitlist';
+        }
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Join waitlist';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title>Orlog for Developers — Decision Reasoning API</title>
+  <meta name="description" content="Add multi-perspective decision reasoning to Claude. Get your API key and install the Orlog MCP server in minutes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --amber: #c4a882; --bone: #d4d4d4; --dim: #666;
+      --bg: #0a0a0a; --bg1: #111111; --bg2: #161616;
+      --border: #222; --gold: #c4a882;
+    }
+    body { background: var(--bg); color: var(--bone); font-family: Georgia, 'Times New Roman', serif; min-height: 100vh; }
+
+    header {
+      padding: 28px 48px; border-bottom: 1px solid var(--border);
+      background: #0c0c0c; display: flex; align-items: center; justify-content: space-between;
+    }
+    .wordmark { display: flex; align-items: center; gap: 6px; text-decoration: none; }
+    .wordmark img { width: 40px; height: 40px; border-radius: 50%; }
+    .wordmark-text { font-family: 'Cinzel Decorative', serif; font-size: 28px; font-weight: 700; color: var(--amber); }
+    .header-cta {
+      font-family: system-ui, sans-serif; font-size: 13px; color: var(--dim);
+      text-decoration: none; border: 1px solid #2a2a2a; padding: 8px 16px;
+      border-radius: 3px; transition: color 0.15s, border-color 0.15s;
+    }
+    .header-cta:hover { color: var(--amber); border-color: #444; }
+
+    .hero { text-align: center; padding: 72px 24px 48px; max-width: 680px; margin: 0 auto; }
+    .hero-tag {
+      font-family: system-ui, sans-serif; font-size: 11px; letter-spacing: 2px;
+      color: var(--amber); text-transform: uppercase; margin-bottom: 20px;
+    }
+    .hero h1 { font-family: 'Cinzel', serif; font-size: 36px; color: var(--amber); margin-bottom: 16px; line-height: 1.2; }
+    .hero p { font-size: 17px; color: #aaa; line-height: 1.7; }
+
+    .content { max-width: 760px; margin: 0 auto; padding: 0 24px 80px; }
+
+    .section { margin-bottom: 56px; }
+    .section-title {
+      font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px;
+      color: var(--amber); text-transform: uppercase; margin-bottom: 20px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    }
+
+    /* Tools */
+    .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .tool-card {
+      background: var(--bg1); border: 1px solid var(--border); border-radius: 4px;
+      padding: 24px;
+    }
+    .tool-name { font-family: 'Courier New', monospace; font-size: 14px; color: var(--amber); margin-bottom: 8px; }
+    .tool-desc { font-family: system-ui, sans-serif; font-size: 13px; color: #999; line-height: 1.6; }
+
+    /* Code blocks */
+    .code-block {
+      background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 4px;
+      padding: 20px 24px; font-family: 'Courier New', monospace; font-size: 13px;
+      color: #c8c8c8; line-height: 1.8; overflow-x: auto; position: relative;
+    }
+    .code-key { color: #c4a882; }
+    .code-val { color: #a8c88a; }
+    .code-comment { color: #555; }
+
+    .copy-btn {
+      position: absolute; top: 12px; right: 12px;
+      font-family: system-ui, sans-serif; font-size: 11px; color: var(--dim);
+      background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 3px;
+      padding: 4px 10px; cursor: pointer; transition: color 0.15s;
+    }
+    .copy-btn:hover { color: var(--amber); }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 28px; }
+    .step { display: flex; gap: 20px; }
+    .step-num {
+      font-family: 'Cinzel', serif; font-size: 20px; color: var(--amber);
+      min-width: 32px; padding-top: 2px;
+    }
+    .step-body { flex: 1; }
+    .step-title { font-family: system-ui, sans-serif; font-size: 15px; color: var(--bone); margin-bottom: 8px; font-weight: 600; }
+    .step-text { font-family: system-ui, sans-serif; font-size: 13px; color: #999; line-height: 1.7; margin-bottom: 12px; }
+
+    /* Pricing */
+    .pricing { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .plan {
+      background: var(--bg1); border: 1px solid var(--border); border-radius: 4px;
+      padding: 28px 24px;
+    }
+    .plan.featured { border-color: #3a3228; background: #111008; }
+    .plan-name { font-family: 'Cinzel', serif; font-size: 13px; color: var(--amber); letter-spacing: 1px; margin-bottom: 8px; }
+    .plan-price { font-family: system-ui, sans-serif; font-size: 28px; color: var(--bone); font-weight: 700; margin-bottom: 4px; }
+    .plan-price span { font-size: 14px; color: var(--dim); font-weight: 400; }
+    .plan-limit { font-family: system-ui, sans-serif; font-size: 13px; color: #888; margin-bottom: 16px; }
+    .plan-cta {
+      display: block; text-align: center; font-family: system-ui, sans-serif;
+      font-size: 13px; padding: 10px; border-radius: 3px; text-decoration: none;
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .plan-cta.outline { border: 1px solid #333; color: #999; background: transparent; }
+    .plan-cta.outline:hover { border-color: var(--amber); color: var(--amber); }
+    .plan-cta.filled { background: var(--amber); color: #0a0a0a; font-weight: 600; border: none; }
+    .plan-cta.filled:hover { background: #d4b892; }
+
+    /* Key request form */
+    .key-form {
+      background: var(--bg1); border: 1px solid var(--border); border-radius: 4px;
+      padding: 32px;
+    }
+    .key-form p { font-family: system-ui, sans-serif; font-size: 14px; color: #999; line-height: 1.7; margin-bottom: 20px; }
+    .form-row { display: flex; gap: 12px; }
+    .form-input {
+      flex: 1; background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 3px;
+      padding: 10px 14px; font-family: system-ui, sans-serif; font-size: 14px;
+      color: var(--bone); outline: none; transition: border-color 0.15s;
+    }
+    .form-input:focus { border-color: var(--amber); }
+    .form-input::placeholder { color: #444; }
+    .form-submit {
+      background: var(--amber); color: #0a0a0a; border: none; border-radius: 3px;
+      padding: 10px 20px; font-family: system-ui, sans-serif; font-size: 14px;
+      font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.15s;
+    }
+    .form-submit:hover { background: #d4b892; }
+    .form-note { font-family: system-ui, sans-serif; font-size: 12px; color: #555; margin-top: 10px; }
+    .form-success { display: none; font-family: system-ui, sans-serif; font-size: 14px; color: #8ab88a; margin-top: 12px; }
+
+    /* Key display (for logged-in users — future) */
+    .key-display {
+      background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 3px;
+      padding: 14px 20px; font-family: 'Courier New', monospace; font-size: 14px;
+      color: var(--amber); letter-spacing: 1px; display: none;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 20px 20px; }
+      .hero { padding: 48px 20px 36px; }
+      .hero h1 { font-size: 26px; }
+      .tools, .pricing { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; }
+      .content { padding: 0 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="wordmark">
+    <img src="/orlog_logo.png" alt="Orlog">
+    <span class="wordmark-text">Orlog</span>
+  </a>
+  <a href="/" class="header-cta">Try Orlog →</a>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">For Developers</div>
+  <h1>Decision reasoning for Claude</h1>
+  <p>Add Orlog's multi-perspective reasoning to any Claude session via MCP. Two tools. One API key. No setup beyond a config block.</p>
+</div>
+
+<div class="content">
+
+  <!-- Tools -->
+  <div class="section">
+    <div class="section-title">What Claude can call</div>
+    <div class="tools">
+      <div class="tool-card">
+        <div class="tool-name">orlog_decide(question)</div>
+        <div class="tool-desc">Multi-perspective verdict on a real decision. Examines competing angles, takes a clear position — not a hedge.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">orlog_explore(message, session_id)</div>
+        <div class="tool-desc">Conversational mode. Helps surface the real question when the user is stuck or unclear about what they're actually deciding.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Install -->
+  <div class="section">
+    <div class="section-title">Install in 3 steps</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Get an API key</div>
+          <div class="step-text">Request a key below. Free tier includes 10 decisions/day.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Add to Claude config</div>
+          <div class="step-text">Paste this into your Claude Desktop or Claude Code settings:</div>
+          <div class="code-block" style="position:relative">
+            <button class="copy-btn" onclick="copyConfig()">Copy</button>
+<span class="code-key">{</span>
+  <span class="code-key">"mcpServers"</span>: {
+    <span class="code-key">"orlog"</span>: {
+      <span class="code-key">"type"</span>: <span class="code-val">"sse"</span>,
+      <span class="code-key">"url"</span>: <span class="code-val">"https://tomsem77--mimir-mcp-serve.modal.run/sse"</span>,
+      <span class="code-key">"headers"</span>: {
+        <span class="code-key">"X-API-Key"</span>: <span class="code-val">"your-api-key-here"</span>
+      }
+    }
+  }
+<span class="code-key">}</span>
+          </div>
+          <div class="step-text" style="margin-top:10px">
+            <strong style="color:#999">Claude Desktop:</strong> <span style="font-family:monospace;font-size:12px;color:#666">~/Library/Application Support/Claude/claude_desktop_config.json</span><br>
+            <strong style="color:#999">Claude Code:</strong> <span style="font-family:monospace;font-size:12px;color:#666">.claude/settings.json</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Restart Claude</div>
+          <div class="step-text">Orlog appears automatically. Claude calls it when you bring a real decision. Or invoke it directly: <em>"Use Orlog to help me think through this."</em></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div class="section">
+    <div class="section-title">Pricing</div>
+    <div class="pricing">
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0 <span>/ month</span></div>
+        <div class="plan-limit">10 decisions per day</div>
+        <a href="#get-key" class="plan-cta outline">Get free key</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$8 <span>/ month</span></div>
+        <div class="plan-limit">500 decisions per day</div>
+        <a href="/" class="plan-cta filled">Get Pro →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key request -->
+  <div class="section" id="get-key">
+    <div class="section-title">Get your API key</div>
+    <div class="key-form">
+      <p>Enter your email and we'll send your free API key within a few hours. Keys are issued manually during early access.</p>
+      <div class="form-row">
+        <input type="email" class="form-input" id="key-email" placeholder="your@email.com">
+        <button class="form-submit" onclick="requestKey()">Request key</button>
+      </div>
+      <div class="form-note">Free tier: 10 decisions/day. No credit card required.</div>
+      <div class="form-success" id="key-success">Got it — check your inbox within a few hours.</div>
+    </div>
+  </div>
+
+  <!-- GitHub -->
+  <div class="section">
+    <div class="section-title">Open source</div>
+    <p style="font-family:system-ui,sans-serif;font-size:14px;color:#888;line-height:1.7">
+      The MCP server wrapper is open source.
+      The reasoning model (Mimir) is proprietary — your API key gates access to it.
+      <br><br>
+      <a href="https://github.com/DonMerlin77/orlog-mcp" style="color:var(--amber);text-decoration:none">github.com/DonMerlin77/orlog-mcp →</a>
+    </p>
+  </div>
+
+</div>
+
+<script>
+function copyConfig() {
+  const config = `{
+  "mcpServers": {
+    "orlog": {
+      "type": "sse",
+      "url": "https://tomsem77--mimir-mcp-serve.modal.run/sse",
+      "headers": {
+        "X-API-Key": "your-api-key-here"
+      }
+    }
+  }
+}`;
+  navigator.clipboard.writeText(config).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+async function requestKey() {
+  const email = document.getElementById('key-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('key-email').focus();
+    return;
+  }
+  const btn = document.querySelector('.form-submit');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  try {
+    await fetch('/api/request-key', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+  } catch(e) {}
+  document.getElementById('key-success').style.display = 'block';
+  btn.textContent = 'Sent';
+}
+</script>
+
+</body>
+</html>
