@@ -33,3 +33,9 @@ Gemini, OpenRouter); `llm_router.py` falls back between them. Some modules (`orl
 depend on a hosted setup (Modal, Clerk, Stripe) or on code that isn't in this repo, so treat those as reference.
 
 User data, logs and session history from the live site are not included.
+
+## Related
+- [orlog-mcp](https://github.com/DonMerlin77/orlog-mcp): how Orlog was exposed to Claude as an MCP server (the hosted
+  service is offline).
+- [dv-dpo](https://github.com/DonMerlin77/dv-dpo): training a model on the council's cross-examinations, and why it
+  didn't hold up.
